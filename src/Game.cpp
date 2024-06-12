@@ -45,7 +45,7 @@ void	Game::initNewGame(void)
 
 	createNewEnemy(4, SKELETON_FROSTMAGE);
 	createNewEnemy(6, SKELETON_FROSTMAGE);
-	//createNewEnemy(8, SKELETON_FROSTMAGE);
+	createNewEnemy(8, SKELETON_FROSTMAGE);
 }
 
 
@@ -123,6 +123,7 @@ void	Game::playerTurn(void)
 		player->castSpellAtTarget(spellNr, _gameMap[targetNr], power);
 	}
 	player->incAP(-1);
+	displayAllEntites();
 	moveCursor(++_terminalRow, _terminalCol);
 	printf("=> Press any key *\b");
 	myGetch();
@@ -159,11 +160,13 @@ void	Game::enemyTurn(void)
 					enemy->castSpellAtTarget(spellNr, getPlayer(), power);
 				}
 				enemy->incAP(-1);
+				displayAllEntites();
 				moveCursor(_terminalRow, _terminalCol);
 				printf("=> Press any key *\b");
 				myGetch();
 				clearLine(_terminalRow);
-				displayAllEntites();
+				if (getPlayer()->getHP() <= 0)
+					break;
 			}
 		}
 	}
@@ -182,16 +185,41 @@ Character * Game::getPlayer(void)
 	return (NULL);
 }
 
-void	Game::displayBar(int size, int current, int max, const char * color)
+void	Game::displayBar(int size, int currentP, int changeP, int maxP, const char * color)
 {
-	int	percent = current * 100 / max;
-	int	sizeBar = percent * size / 100;
+	double	percentCurrent = (double) currentP * 100.0 / maxP;
+	int	sizeBarCurrent = (int) ((percentCurrent * size / 100.0) + 0.5);
+	if (currentP < 0)
+	{
+		sizeBarCurrent = 0;
+		if (changeP != 0)
+			changeP -= currentP;
+	}
+
+	double	percentChange = (double) (changeP * 100.0 / maxP);
+	int	sizeBarChange = (int) ((percentChange * size / 100.0) + 0.5);
+
+	// positive changeP => increased value - currentP contains it
+	if (changeP > 0)
+	{
+		sizeBarCurrent -= sizeBarChange;
+	}
+	// negative changeP => decreased value - currentP does not contain it
+	else if (changeP < 0)
+	{
+		sizeBarChange = (int) ((percentChange * size / 100.0) - 0.5) * -1;
+	}
 
 	printf("%s", color);
-	for (int i = 0; i < sizeBar; ++i)
+	for (int i = 0; i < sizeBarCurrent; ++i)
+		printf("█");
+
+	printf(YELLOW);
+	for (int i = 0; i < sizeBarChange; ++i)
 		printf("▓");
 
-	for (int i = sizeBar; i < size; ++i)
+	printf("%s", color);
+	for (int i = sizeBarCurrent + sizeBarChange; i < size; ++i)
 		printf("░");
 
 	printf(RESET);
@@ -246,11 +274,11 @@ void	Game::displayEntity(int col, int row, int idx)
 
 	moveCursor(row + 2,col);
 	printf(WHITE "HP [%3i/%3i]" RESET, entity->getHP(), entity->getMaxHP());
-	displayBar(10, entity->getHP(), entity->getMaxHP(), RED);
+	displayBar(10, entity->getHP(), entity->getChangeHP(), entity->getMaxHP(), RED);
 
 	moveCursor(row + 3, col);
 	printf(WHITE "MP [%3i/%3i]" RESET, entity->getMP(), entity->getMaxMP());
-	displayBar(10, entity->getMP(), entity->getMaxMP(), BLUE);
+	displayBar(10, entity->getMP(), entity->getChangeMP(), entity->getMaxMP(), BLUE);
 }
 
 void	Game::createNewPlayer(int idx)
@@ -266,9 +294,9 @@ void	Game::createNewPlayer(int idx)
 
 	*newEntity = (new Character(playername, 25, 10));
 	(*newEntity)->setFaction("Player");
-	(*newEntity)->addDice(Dice(4));
-	(*newEntity)->addDice(Dice(4));
-	(*newEntity)->addDice(Dice(4));
+	(*newEntity)->addDice(Dice());
+	(*newEntity)->addDice(Dice());
+	(*newEntity)->addDice(Dice());
 	(*newEntity)->addSpell(new Meditate());
 	(*newEntity)->addSpell(new Icebolt());
 	(*newEntity)->addSpell(new Cure());
@@ -286,7 +314,7 @@ void	Game::createNewEnemy(int idx, t_enemy enemyNr)
 	{
 	case SKELETON_FROSTMAGE :
 			*newEntity = (new Character("Skeleton Frostmage", 15, 5));
-			(*newEntity)->addDice(Dice(4));
+			(*newEntity)->addDice(Dice());
 			(*newEntity)->addSpell(new Meditate());
 			(*newEntity)->addSpell(new Icebolt());
 			(*newEntity)->setStatus(STATUS_UNDEAD);

@@ -46,7 +46,7 @@ public:
 	void	enemyTurn(void);
 	void	playerTurn(void);
 
-	void	displayBar(int size, int current, int max, const char * color);
+	void	displayBar(int size, int current, int change, int max, const char * color);
 	void	displayAllEntites(void);
 	void	displayEntity(int col, int row, int idx);
 

@@ -36,6 +36,8 @@ public:
 	int		getMaxHP(void) const;
 	int		getMP(void) const;
 	int		getMaxMP(void) const;
+	int		getChangeHP(void);
+	int		getChangeMP(void);
 	
 	int		getAP(void) const;
 	void	incAP(const int change);
@@ -73,8 +75,10 @@ private:
 
 	int	_HP;
 	int	_MaxHP;
+	int	_changeHP;
 	int	_MP;
 	int	_MaxMP;
+	int	_changeMP;
 	int	_AP;
 	int	_MaxAP;
 

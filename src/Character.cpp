@@ -10,6 +10,8 @@ Character::Character(std::string const name, const int HP, const int MP)
 	_MaxHP = _HP = HP;
 	_MaxMP = _MP = MP;
 	_MaxAP = _AP = 1;
+	_changeHP = 0;
+	_changeMP = 0;
 }
 
 Character::Character(Character const & input)
@@ -143,24 +145,34 @@ void	Character::incHP(const int change)
 	if (_status == STATUS_DEAD)
 		return ;
 
-	_HP += change;
-	if (_HP > _MaxHP)
+	if ((change + _HP) > _MaxHP)
+	{
+		_changeHP = _MaxHP - _HP;
 		_HP = _MaxHP;
+	}
+	else
+	{
+		_changeHP += change;
+		_HP += change;
+	}
+
 	if (_HP <= 0)
 	{
-		_HP = 0;
 		_status = STATUS_DEAD;
 	}
 }
 
 void	Character::incMP(const int change)
 {
-	_MP += change;
-	if (_MP > _MaxMP)
-		_MP = _MaxMP;
-	if (_MP <= 0)
+	if ((change + _MP) > _MaxMP)
 	{
-		_MP = 0;
+		_changeMP = _MaxMP - _MP;
+		_MP = _MaxMP;
+	}
+	else
+	{
+		_changeMP += change;
+		_MP += change;
 	}
 }
 
@@ -194,4 +206,18 @@ void	Character::incAP(const int change)
 	_AP += change;
 	if (_AP > _MaxAP)
 		_AP = _MaxAP;
+}
+
+int		Character::getChangeHP(void)
+{
+	int	tmp = _changeHP;
+	_changeHP = 0;
+	return (tmp);
+}
+
+int		Character::getChangeMP(void)
+{
+	int	tmp = _changeMP;
+	_changeMP = 0;
+	return (tmp);
 }
