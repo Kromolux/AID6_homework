@@ -122,7 +122,7 @@ void	Game::playerTurn(void)
 		moveCursor(_terminalRow, _terminalCol);
 		player->castSpellAtTarget(spellNr, _gameMap[targetNr], power);
 	}
-	player->incAP(-1);
+	player->changeAP(-1);
 	displayAllEntites();
 	moveCursor(++_terminalRow, _terminalCol);
 	printf("=> Press any key *\b");
@@ -159,7 +159,7 @@ void	Game::enemyTurn(void)
 					moveCursor(_terminalRow++, _terminalCol);
 					enemy->castSpellAtTarget(spellNr, getPlayer(), power);
 				}
-				enemy->incAP(-1);
+				enemy->changeAP(-1);
 				displayAllEntites();
 				moveCursor(_terminalRow, _terminalCol);
 				printf("=> Press any key *\b");
@@ -369,7 +369,7 @@ int		Game::getDiceResult(Character * user, const int MPSpend)
 		{
 			printf("[D%i+%i] = <%i> ", user->getDiceSupply()[i].getSides(), user->getDiceSupply()[i].getBonus(),user->getDiceSupply()[i].roll());
 			power += user->getDiceSupply()[i].getLastRoll();
-			user->incMP(- MPSpend);
+			user->changeMP(- MPSpend);
 		}
 	}
 	printf(RESET);
@@ -381,6 +381,6 @@ void	Game::restoreAP(void)
 	for (int i = 1; i < 10; ++i)
 	{
 		if (_gameMap[i] && _gameMap[i]->getStatus() != STATUS_DEAD)
-			_gameMap[i]->incAP(1);
+			_gameMap[i]->changeAP(1);
 	}
 }

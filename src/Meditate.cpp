@@ -1,3 +1,11 @@
+/*! \file
+
+	@brief Definition of the class Meditate for handling Meditate materia in the game.
+ */
+
+/* Implementation of the Meditate class */
+
+
 #include "../inc/Meditate.hpp"
 
 Meditate::Meditate(void) : AMateria("Meditate")
@@ -35,8 +43,6 @@ AMateria *	Meditate::clone(void) const
 
 void	Meditate::use(Character & target, const int & power)
 {
-	//printf(GREEN " heals <%i> %s's wounds " RESET, power, target.getName().c_str());
-	//target.incHP(power);
 	printf(YELLOW " meditates and restores <%i> MP" RESET, power);
-	target.incMP(power);
+	target.changeMP(power);
 }

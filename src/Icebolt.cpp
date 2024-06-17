@@ -1,3 +1,10 @@
+/*! \file
+
+	@brief Definition of the class Icebolt for handling Icebolt materia in the game.
+ */
+
+/* Implementation of the Icebolt class */
+
 
 #include "../inc/Icebolt.hpp"
 
@@ -37,5 +44,5 @@ AMateria *	Icebolt::clone( void ) const
 void	Icebolt::use(Character & target, const int & power)
 {
 	printf(BLUE " shoots an Icebolt <%i> at %s" RESET, power, target.getName().c_str());
-	target.incHP(-1 * power);
+	target.changeHP(-1 * power);
 }

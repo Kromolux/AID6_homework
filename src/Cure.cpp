@@ -1,3 +1,11 @@
+/*! \file
+
+	@brief Definition of the class Cure for handling cure materia in the game.
+ */
+
+/* Implementation of the Cure class */
+
+
 #include "../inc/Cure.hpp"
 
 Cure::Cure(void) : AMateria("Cure")
@@ -6,10 +14,13 @@ Cure::Cure(void) : AMateria("Cure")
 Cure::Cure(std::string const & type) : AMateria(type)
 {}
 
-Cure::Cure(Cure const & input) : AMateria("Cure_copy")
+Cure::Cure(Cure const & copy) : AMateria("Cure_copy")
 {
-	*this = input;
+	*this = copy;
 }
+
+Cure::~Cure(void)
+{}
 
 Cure const & Cure::operator=(Cure const & rhs)
 {
@@ -20,8 +31,6 @@ Cure const & Cure::operator=(Cure const & rhs)
 	return ( *this );
 }
 
-Cure::~Cure(void)
-{}
 
 std::string const & Cure::getType(void) const
 {
@@ -36,5 +45,5 @@ AMateria *	Cure::clone(void) const
 void	Cure::use(Character & target, const int & power)
 {
 	printf(GREEN " heals <%i> %s's wounds " RESET, power, target.getName().c_str());
-	target.incHP(power);
+	target.changeHP(power);
 }

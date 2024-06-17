@@ -1,3 +1,10 @@
+/*!	\file
+	\brief Defines macros and functions for terminal management and text-based graphics.
+
+	This header file provides macros for various graphical characters and symbols,
+	as well as functions to handle terminal input and output operations.
+*/
+
 #pragma once
 #ifndef TERMINALMANAGER_H
 # define TERMINALMANAGER_H
@@ -87,24 +94,89 @@
 #  define DEBUG 0
 # endif
 
-extern struct termios *newTerminalG;
-extern struct termios *oldTerminalG;
+extern struct termios *newTerminalG;	/*!< Pointer to the new terminal settings */
+extern struct termios *oldTerminalG;	/*!< Pointer to the old terminal settings */
 
+/*!	\brief Gets a single character from the terminal without echo.
+
+	\return The character read.
+*/
 int		myGetch(void);
+
+/*!	\brief Initializes the terminal settings for raw input.
+*/
 void	initTerminal(void);
+
+/*!	\brief Sets the terminal to raw input mode for getch.
+*/
 void	getchTerminal(void);
+
+/*!	\brief Restores the terminal settings to their original state.
+*/
 void	restoreTerminal(void);
+
+/*!	\brief Frees the allocated terminal settings.
+*/
 void	freeTerminal(void);
 
+/*!	\brief Clears the specified line in the terminal.
+	\param row The row to clear.
+*/
 void	clearLine(int row);
+
+/*!	\brief Clears the terminal output.
+*/
 void	clearOutput(void);
 
+/*!	\brief Moves the cursor to the specified position.
+
+	\param row The row to move to.
+	\param col The column to move to.
+*/
 void	moveCursor(int row, int col);
 
+/*!	\brief Draws a box with double lines at the specified position and dimensions.
+
+	\param row The starting row of the box.
+	\param col The starting column of the box.
+	\param height The height of the box.
+	\param width The width of the box.
+*/
 void	drawBoxDoubleLine(int row, int col, int height, int width);
+
+/*!	\brief Draws a box with single lines at the specified position and dimensions.
+
+	\param row The starting row of the box.
+	\param col The starting column of the box.
+	\param height The height of the box.
+	\param width The width of the box.
+*/
 void	drawBoxSingleLine(int row, int col, int height, int width);
+
+/*!	\brief Draws a box with custom characters at the specified position and dimensions.
+
+	\param row The starting row of the box.
+	\param col The starting column of the box.
+	\param height The height of the box.
+	\param width The width of the box.
+	\param ul The character for the upper-left corner.
+	\param ur The character for the upper-right corner.
+	\param dl The character for the lower-left corner.
+	\param dr The character for the lower-right corner.
+	\param btb The character for the top and bottom borders.
+	\param blr The character for the left and right borders.
+*/
 void	drawBoxRandom(int row, int col, int height, int width, const char *ul, const char * ur, const char * dl, const char * dr, const char * btb, const char * blr);
 
+/*!	\brief Handles signals sent to the terminal.
+
+	This function is designed to handle various signals sent to the terminal. It is typically
+	used to clean up or reset the terminal state when the application receives an interrupt
+	signal (such as SIGINT). This can help ensure that the terminal is left in a consistent
+	state even if the application is interrupted.
+
+	\param sign The signal number that was received.
+*/
 void	signalHandler(int sign);
 
 #endif

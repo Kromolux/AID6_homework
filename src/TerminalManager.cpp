@@ -1,3 +1,10 @@
+/*! \file
+
+	@brief Definition of the TerminalManager functions.
+ */
+
+/* Implementation of the TerminalManager functions.*/
+
 #include "../inc/TerminalManager.h"
 
 struct termios *newTerminalG = NULL;

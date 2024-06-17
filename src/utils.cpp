@@ -1,5 +1,11 @@
-#include "../inc/utils.h"
+/*! \file
 
+	@brief Definition of the utils functions.
+ */
+
+/* Implementation of the Helperfunctions.*/
+
+#include "../inc/utils.h"
 
 int	getDigits(const int sides)
 {
