@@ -1,8 +1,15 @@
+/*! \file
+
+	@brief Definition of the Game class responsible for managing the game logic and characters.
+ */
+
+/* Implementation of the Game class */
+
+
 #include "../inc/Game.hpp"
 
 Game::Game(void)
 {
-	_NrOfPlayers = 0;
 	_Playerturn = true;
 
 	std::srand( static_cast<unsigned int>(std::time( NULL )));  // Seed the random number generator
@@ -36,7 +43,7 @@ void	Game::initNewGame(void)
 		printf("═");
 	printf("╣");
 	moveCursor(1, 28);
-	printf(BOLDYELLOW "[ Dice Treasure Hunter ]" RESET);
+	printf(YELLOW "[ Dice Treasure Hunter ]" RESET);
 
 	moveCursor(17, 3);
 
@@ -102,18 +109,18 @@ void	Game::playerTurn(void)
 	}
 	else
 	{
-		size_t end = player->getSpellBook().size();
+		size_t spellBookSize = player->getSpellBook().size();
 		printf(CYAN);
-		for (size_t i = 1; i < end; ++i)
+		for (size_t i = 1; i < spellBookSize; ++i)
 		{
-			moveCursor(17 + (int) i, 3);
+			moveCursor(_terminalRow + (int) i, _terminalCol);
 			printf("(%li) %s", i, player->getSpellBook().at(i)->getType().c_str());
 		}
 		moveCursor(_terminalRow++, _terminalCol);
 		size_t	spellNr = player->PlayerSelectSpell();
 		printf(RESET);
 
-		for (size_t i = 2; i < end; ++i)
+		for (size_t i = 2; i < spellBookSize; ++i)
 			clearLine(17 + (int) i);
 
 		moveCursor(_terminalRow++, _terminalCol);
@@ -125,34 +132,34 @@ void	Game::playerTurn(void)
 	player->changeAP(-1);
 	displayAllEntites();
 	moveCursor(++_terminalRow, _terminalCol);
-	printf("=> Press any key *\b");
-	myGetch();
+	pressAnyKey(_terminalRow);
 }
 
 void	Game::enemyTurn(void)
 {
-	Character * enemy = NULL;
-	size_t	spellNr = 0;
-	int		power;
+	Character	*enemy = NULL;
+	size_t		spellNr = 0;
+	int			power;
 
 	moveCursor(16, 33);
 	printf(BOLDRED "[ Enemy Turn ]" RESET DHLINE);
 
 	for (int i = 1; i < 10; ++i)			// loop over all possible map positions
 	{
-		if (_gameMap[i])					// if there is an entity pointer is true
+		if (_gameMap[i])					// if there is an entity pointer
 		{
+			// If the enemy is not DEAD and has action points available
 			if (_gameMap[i]->getFaction() == "Enemy" && _gameMap[i]->getStatus() != STATUS_DEAD && _gameMap[i]->getAP() > 0)
 			{
 				moveCursor(_terminalRow, _terminalCol);
 				enemy = _gameMap[i];
-				if (enemy->getMP() == 0)				// out of mana needs to meditate to restore mana
+				if (enemy->getMP() == 0)				// enemy is out of mana and needs to meditate to restore mana
 				{
 					power = getDiceResult(enemy, 0);
 					moveCursor(_terminalRow++, _terminalCol);
 					enemy->castSpellAtTarget(0, enemy, power);
 				}
-				else
+				else									// enemy can cast a spell
 				{
 					spellNr = enemy->EnemySelectSpell();
 					power = getDiceResult(enemy, 1);
@@ -162,9 +169,7 @@ void	Game::enemyTurn(void)
 				enemy->changeAP(-1);
 				displayAllEntites();
 				moveCursor(_terminalRow, _terminalCol);
-				printf("=> Press any key *\b");
-				myGetch();
-				clearLine(_terminalRow);
+				pressAnyKey(_terminalRow);
 				if (getPlayer()->getHP() <= 0)
 					break;
 			}
@@ -174,11 +179,11 @@ void	Game::enemyTurn(void)
 
 Character * Game::getPlayer(void)
 {
-	for (int i = 1; i < 10; ++i)
+	for (int i = 1; i < 10; ++i)		// loop over all possible map positions
 	{
-		if (_gameMap[i])
+		if (_gameMap[i])				// if there is an entity pointer
 		{
-			if(_gameMap[i]->getFaction() == "Player")
+			if(_gameMap[i]->getFaction() == "Player")	// if the faction is "Player"
 				return (_gameMap[i]);
 		}
 	}
@@ -231,6 +236,11 @@ void	Game::displayAllEntites(void)
 	int	startCol = STATSCOL;
 	int	startRow = STATSROW;
 
+	/* the game map is a 3 by 3 2D square. Idx zero is not used
+		7	8	9
+		4	5	6
+		1	2	3
+	*/
 	for (int i = 0; i < 3; ++i)
 	{
 		for (int j = 0; j < 3; ++j, ++idx)
@@ -244,7 +254,7 @@ void	Game::displayEntity(int col, int row, int idx)
 {
 	Character * entity = _gameMap[idx];
 
-	if (!entity)
+	if (!entity)		// if the entity pointer is null, return
 		return ;
 
 	moveCursor(row, col);
@@ -328,18 +338,18 @@ void	Game::createNewEnemy(int idx, t_enemy enemyNr)
 
 bool	Game::isEnemyDead(void)
 {
-	for ( int i = 1; i < 10; ++i)
+	for ( int i = 1; i < 10; ++i)		// loop over all possible map positions
 	{
-		if (_gameMap[i])
+		if (_gameMap[i])				// if there is an entity pointer
 		{
-			if (_gameMap[i]->getFaction() == "Enemy")
+			if (_gameMap[i]->getFaction() == "Enemy")	// if the faction is "Enemy"
 			{
-				if (_gameMap[i]->getStatus() != STATUS_DEAD)
+				if (_gameMap[i]->getStatus() != STATUS_DEAD)	// if the entity is not DEAD return false
 					return (false);
 			}
 		}
 	}
-	return (true);
+	return (true);						// return true if all Enemies on the game map are DEAD
 }
 
 std::string	Game::getStatusText(t_status statusNr)
@@ -359,16 +369,19 @@ std::string	Game::getStatusText(t_status statusNr)
 
 int		Game::getDiceResult(Character * user, const int MPSpend)
 {
-	int power = 0;
+	int	power = 0;
+	Dice	*dice;
 
 	printf(YELLOW);
 	moveCursor(_terminalRow++, _terminalCol);
+
 	for (size_t i = 0; i < user->getDiceSupply().size(); ++i)
 	{
 		if (user->getMP() >= MPSpend)
 		{
-			printf("[D%i+%i] = <%i> ", user->getDiceSupply()[i].getSides(), user->getDiceSupply()[i].getBonus(),user->getDiceSupply()[i].roll());
-			power += user->getDiceSupply()[i].getLastRoll();
+			dice = &user->getDiceSupply()[i];
+			printf("[D%i+%i] = <%i> ", dice->getSides(), dice->getBonus(), dice->roll());
+			power += dice->getLastRoll();
 			user->changeMP(- MPSpend);
 		}
 	}
@@ -378,7 +391,7 @@ int		Game::getDiceResult(Character * user, const int MPSpend)
 
 void	Game::restoreAP(void)
 {
-	for (int i = 1; i < 10; ++i)
+	for (int i = 1; i < 10; ++i)		// loop over all possible map positions
 	{
 		if (_gameMap[i] && _gameMap[i]->getStatus() != STATUS_DEAD)
 			_gameMap[i]->changeAP(1);

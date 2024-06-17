@@ -122,7 +122,7 @@ void	freeTerminal(void);
 /*!	\brief Clears the specified line in the terminal.
 	\param row The row to clear.
 */
-void	clearLine(int row);
+void	clearLine(int const row);
 
 /*!	\brief Clears the terminal output.
 */
@@ -133,7 +133,7 @@ void	clearOutput(void);
 	\param row The row to move to.
 	\param col The column to move to.
 */
-void	moveCursor(int row, int col);
+void	moveCursor(int const row, int const col);
 
 /*!	\brief Draws a box with double lines at the specified position and dimensions.
 
@@ -178,5 +178,13 @@ void	drawBoxRandom(int row, int col, int height, int width, const char *ul, cons
 	\param sign The signal number that was received.
 */
 void	signalHandler(int sign);
+
+
+/*!	\brief Prompts the user to press any key.
+
+	This function prompts the user to press any key using myGetch function.
+	Clears the terminal line afterwards.
+*/
+void	pressAnyKey(int const row);
 
 #endif

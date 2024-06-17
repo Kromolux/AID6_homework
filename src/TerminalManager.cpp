@@ -51,7 +51,7 @@ void	freeTerminal(void)
 	free(oldTerminalG);
 }
 
-void	clearLine(int row)
+void	clearLine(int const row)
 {
 	printf("\033[%d;2H", row);
 	//fflush(stdin);
@@ -73,7 +73,7 @@ void	clearOutput(void)
 }
 
 // sets the cursor to the position row, col in the terminal
-void	moveCursor(int row, int col)
+void	moveCursor(int const row, int const col)
 {
 	printf("\033[%d;%dH", row, col);
 	fflush(stdout);
@@ -122,4 +122,11 @@ void	signalHandler(int sign)
 	printf(RED "\n***signal handler called! Game aborted.***\n" RESET);
 	restoreTerminal();
 	exit(-1);
+}
+
+void	pressAnyKey(int const row)
+{
+	printf("=> Press any key *\b");
+	myGetch();
+	clearLine(row);
 }
