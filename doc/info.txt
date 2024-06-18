@@ -13,13 +13,14 @@
 
 	\subsection Game
 	- The game is called Dice Treasure Hunter
-	- The dices are used to create random numbers in the game mechanic.
+	- The Dice are used to create random numbers in the game mechanic.
 
 
 	\subsection Dice
 	- There is a class Dice in the game.
-	- Its used roll random numbers in the game.
-	- There is potential in the class that is not yet used.
+	- Its used to roll random numbers in the game.
+	- The default Dice is a [D6+0] - 6 sides and no bonus.
+	- Numbers from 1 to 6 are possile to roll with it.
 
 
 	\subsection Inheritance
@@ -32,10 +33,10 @@
 
 	\subsection Success
 	- The player has to beat three skeleton frost mages on a 3 by 3 game map.
-	- To achive this, the player has 2 main spells in its spellbook, Icebolt and cure.
+	- To achive this, the player has 2 main spells in its spellbook, Icebolt and Cure.
 	- The 3rd spell Meditate is passively used when the MP reaches zero.
 	- The frost mages can only use the Icebolt spell to kill the player.
-	- The player starts with 3 D6+0 dice and every skeleton with only one D6+0 dice.
+	- The player starts with 3x [D6+0] Dice and every skeleton with 1x [D6+0] Dice.
 	- If the players health points reachs zero, the player has lost the game.
 	- If all enemies are DEAD, the player has won the game. -> success.
 

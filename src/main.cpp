@@ -1,6 +1,12 @@
+/*! \file
+
+	@brief The main function - entry point.
+ */
+
+
 #include "../inc/Game.hpp"
 
-int	main( void )
+int	main(void)
 {
 	//init signal handler for ctl c to reset terminal settings
 	signal(SIGINT, &signalHandler);
@@ -11,5 +17,5 @@ int	main( void )
 	MyGame.initNewGame();
 	MyGame.gameLoop();
 
-	return ( 0 );
+	return (0);
 }
