@@ -14,18 +14,18 @@ Game::Game(void)
 
 	std::srand( static_cast<unsigned int>(std::time( NULL )));  // Seed the random number generator
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < GAME_MAP_SIZE; ++i)
 		_gameMap[i] = NULL;
 
 	setlocale(LC_ALL, "");
-	_terminalCol = 3;
-	_terminalRow = 17;
+	_terminalCol = GAME_TERMINAL_COL;
+	_terminalRow = GAME_TERMINAL_ROW;
 	_terminalMaxRow = 24;
 }
 
 Game::~Game(void)
 {
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < GAME_MAP_SIZE; ++i)
 		if (_gameMap[i])
 			delete _gameMap[i];
 	freeTerminal();
@@ -45,10 +45,10 @@ void	Game::initNewGame(void)
 	moveCursor(1, 28);
 	printf(YELLOW "[ Dice Treasure Hunter ]" RESET);
 
-	moveCursor(17, 3);
+	moveCursor(_terminalRow, _terminalCol);
 
 	createNewPlayer(2);
-	clearLine(17);
+	clearLine(_terminalRow);
 
 	createNewEnemy(4, SKELETON_FROSTMAGE);
 	createNewEnemy(6, SKELETON_FROSTMAGE);
@@ -71,7 +71,7 @@ void	Game::gameLoop(void)
 
 		clearOutput();
 		restoreAP();
-		_terminalRow = 17;
+		_terminalRow = GAME_TERMINAL_ROW;
 		_Playerturn ^= 1;
 
 		if (isEnemyDead())								// game over! player has won the game -> end loop
@@ -84,7 +84,7 @@ void	Game::gameLoop(void)
 	}
 
 	displayAllEntites();
-	moveCursor(17,3);
+	moveCursor(_terminalRow, _terminalCol);
 	if (playerwon)
 		printf("***Congratulations %s! You have won the game!***", getPlayer()->getName().c_str());
 	else
@@ -110,6 +110,7 @@ void	Game::playerTurn(void)
 	else
 	{
 		size_t spellBookSize = player->getSpellBook().size();
+
 		printf(CYAN);
 		for (size_t i = 1; i < spellBookSize; ++i)
 		{
@@ -179,7 +180,7 @@ void	Game::enemyTurn(void)
 
 Character * Game::getPlayer(void)
 {
-	for (int i = 1; i < 10; ++i)		// loop over all possible map positions
+	for (int i = 1; i < GAME_MAP_SIZE; ++i)		// loop over all possible map positions
 	{
 		if (_gameMap[i])				// if there is an entity pointer
 		{
@@ -192,27 +193,29 @@ Character * Game::getPlayer(void)
 
 void	Game::displayBar(int size, int currentP, int changeP, int maxP, const char * color)
 {
-	double	percentCurrent = (double) currentP * 100.0 / maxP;
-	int	sizeBarCurrent = (int) ((percentCurrent * size / 100.0) + 0.5);
-	if (currentP < 0)
+	int	sizeBarCurrent = 0;
+	int	sizeBarChange = 0;
+
+	if (currentP < 0)			// entity has negativ points currently
 	{
-		sizeBarCurrent = 0;
-		if (changeP != 0)
-			changeP -= currentP;
+		if (changeP < 0)
+			changeP -= currentP;	// subtract the current points from the change to get the remaining change number
+	}
+	else						// entity has positive points currently
+	{
+		sizeBarCurrent = (int) ( ((double) currentP * size / maxP) + 0.5);
 	}
 
-	double	percentChange = (double) (changeP * 100.0 / maxP);
-	int	sizeBarChange = (int) ((percentChange * size / 100.0) + 0.5);
-
-	// positive changeP => increased value - currentP contains it
-	if (changeP > 0)
+	// positive changeP => increased value - currentP contains it already
+	if (changeP > 0)			// the change is positive means increase in value
 	{
+		sizeBarChange  = (int) ( ( (double) changeP * size / maxP) + 0.5);
 		sizeBarCurrent -= sizeBarChange;
 	}
 	// negative changeP => decreased value - currentP does not contain it
 	else if (changeP < 0)
 	{
-		sizeBarChange = (int) ((percentChange * size / 100.0) - 0.5) * -1;
+		sizeBarChange = (int) ( ( (double) changeP * size / maxP) - 0.5) * -1;
 	}
 
 	printf("%s", color);
@@ -233,8 +236,8 @@ void	Game::displayBar(int size, int currentP, int changeP, int maxP, const char 
 void	Game::displayAllEntites(void)
 {
 	int	idx = 1;
-	int	startCol = STATSCOL;
-	int	startRow = STATSROW;
+	int	startCol = STATS_COL;
+	int	startRow = STATS_ROW;
 
 	/* the game map is a 3 by 3 2D square. Idx zero is not used
 		7	8	9
@@ -298,9 +301,9 @@ void	Game::createNewPlayer(int idx)
 		delete newEntity;
 	newEntity = &_gameMap[idx];
 
-	char playername[20];
+	char playername[MAX_NAME_CHARS + 1];
 	printf("=> Please enter your name: ");
-	std::cin.getline(playername, MAXNAMECHARS);
+	std::cin.getline(playername, MAX_NAME_CHARS);
 
 	*newEntity = (new Character(playername, 25, 10));
 	(*newEntity)->setFaction("Player");
@@ -338,7 +341,7 @@ void	Game::createNewEnemy(int idx, t_enemy enemyNr)
 
 bool	Game::isEnemyDead(void)
 {
-	for ( int i = 1; i < 10; ++i)		// loop over all possible map positions
+	for ( int i = 1; i < GAME_MAP_SIZE; ++i)		// loop over all possible map positions
 	{
 		if (_gameMap[i])				// if there is an entity pointer
 		{
@@ -391,7 +394,7 @@ int		Game::getDiceResult(Character * user, const int MPSpend)
 
 void	Game::restoreAP(void)
 {
-	for (int i = 1; i < 10; ++i)		// loop over all possible map positions
+	for (int i = 1; i < GAME_MAP_SIZE; ++i)		// loop over all possible map positions
 	{
 		if (_gameMap[i] && _gameMap[i]->getStatus() != STATUS_DEAD)
 			_gameMap[i]->changeAP(1);

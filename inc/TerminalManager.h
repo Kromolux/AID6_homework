@@ -13,6 +13,7 @@
 # include <termios.h>
 # include <cstdio>
 # include <signal.h>
+# include <unistd.h>
 # include "colors.h"
 
 // Box Drawing Characters

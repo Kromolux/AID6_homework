@@ -1,39 +1,42 @@
 /*! \file
 
-	\mainpage STB - Homework AID5 WS2023/24
+	\mainpage STB - Homework AID6 SS2023/24
 
 	\section titel Doxygen documentation for homework
 
-	\subsection Punkt2D
-	- Extend the class Punkt2D with the copy constructor (Why?)
-	- Extend the class Punkt2D with at least 3 meaningful operators
-	- Comment the class meaningfull with Doxygen
+	\subsection Homework Instructions
+	- Any game with dice.
+	- There is one class of dice.
+	- There is some form of inheritance.
+	- There is some form of success.
 
-	\subsection Punkt3D
-	- The class Punkt3D inherits, as usual, the class Punkt2D
-	- Extend the class Punkt3D with the copy constructor (Why?)
-	- Extend the class Punkt3D with at least 3 meaningful operators
-	- Use existing methods for these extensions as often as possible
-	- Comment the class meaningfull with Doxygen
 
-	\subsection Kreis
-	- The class Kreis uses (does not inherit!) the class Punkt2D
-	- Create at least two more useful methods (apart from con- and destructors)
-	- Extend the class Kreis by at least 2 meaningful operators
-	- Use existing methods for these extensions as often as possible
-	- Comment the class meaningfull with Doxygen
+	\subsection Game
+	- The game is called Dice Treasure Hunter
+	- The dices are used to create random numbers in the game mechanic.
 
-	\subsection Strecke3D
-	- The class Strecke3D uses (does not inherit!) the class Punkt3D
-	- Create at least 4 more useful methods (apart from con- and destructors)
-	- Extend the Strecke3D class by at least 2 meaningful operators
-	- Use existing methods for these extensions as often as possible
-	- Comment the class meaningfull with Doxygen
 
-	\subsection Program
-	- Create a main programme that tests all methods and operators
+	\subsection Dice
+	- There is a class Dice in the game.
+	- Its used roll random numbers in the game.
+	- There is potential in the class that is not yet used.
 
-	\subsection Documentation
-	- Create documentation for these 4 classes
+
+	\subsection Inheritance
+	- There is an abstract class called AMateria. All spell classes inherit from it.
+	- AMateria base class
+		- Icebolt class - for shooting an icebolt at someone
+		- Cure class	- for healing someones health points
+		- Meditate class	- for restoring mana points
+
+
+	\subsection Success
+	- The player has to beat three skeleton frost mages on a 3 by 3 game map.
+	- To achive this, the player has 2 main spells in its spellbook, Icebolt and cure.
+	- The 3rd spell Meditate is passively used when the MP reaches zero.
+	- The frost mages can only use the Icebolt spell to kill the player.
+	- The player starts with 3 D6+0 dice and every skeleton with only one D6+0 dice.
+	- If the players health points reachs zero, the player has lost the game.
+	- If all enemies are DEAD, the player has won the game. -> success.
 
 */

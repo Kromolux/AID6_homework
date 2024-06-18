@@ -24,9 +24,35 @@
 # include "../inc/Cure.hpp"
 # include "../inc/TerminalManager.h"
 
-# define MAXNAMECHARS 19
-# define STATSROW 12
-# define STATSCOL 3
+/*!	\brief The maximum characters for the player name.
+	\def MAX_NAME_CHARS
+*/
+# define MAX_NAME_CHARS 19
+
+/*!	\brief The row where the terminal printout for the game map starts.
+	\def STATSROW
+*/
+# define STATS_ROW 12
+
+/*!	\brief The col where the terminal printout for the game map starts.
+	\def STATSCOL
+*/
+# define STATS_COL 3
+
+/*!	\brief The col of the game terminal printout.
+	\def GAME_TERMINAL_COL
+*/
+# define GAME_TERMINAL_COL 3
+
+/*!	\brief The row of the game terminal printout.
+	\def GAME_TERMINAL_ROW
+*/
+# define GAME_TERMINAL_ROW 17
+
+/*!	\brief The maximum of the game size.
+	\def GAME_MAP_SIZE
+*/
+# define GAME_MAP_SIZE 10
 
 /*!	\brief Enumeration representing different types of enemies.
 
@@ -35,8 +61,8 @@
 typedef enum e_enemy
 {
 	SKELETON_FROSTMAGE,			/*!< Skeleton frost mage */
-	SKELETON_HEALER,			/*!< Skeleton healer */
-	SKELETON_NECROMANCER		/*!< Skeleton necromancer */
+	SKELETON_HEALER,			/*!< Skeleton healer - not implemented yet */
+	SKELETON_NECROMANCER		/*!< Skeleton necromancer - not implemented yet */
 }			 t_enemy;
 
 
@@ -45,7 +71,7 @@ class Game
 protected:
 	bool _Playerturn;			/*!< Flag indicating if it's the player's turn */
 
-	Character *_gameMap[10];	/*!< Array representing the game map */
+	Character *_gameMap[GAME_MAP_SIZE];	/*!< Array representing the game map */
 
 	int	_terminalRow;			/*!< Terminal row for output printf */
 	int	_terminalCol;			/*!< Terminal column for output printf */
